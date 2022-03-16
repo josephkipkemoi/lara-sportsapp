@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BalanceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,5 +26,6 @@ Route::get('/dashboard', function () {
 Route::get('/countries', function () {
     return view('countries.show');
 })->name('countries');
+
 
 require __DIR__.'/auth.php';
