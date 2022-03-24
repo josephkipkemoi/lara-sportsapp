@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('betslips', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->unsignedBigInteger('game_id');
             $table->string('betslip_team_names');
