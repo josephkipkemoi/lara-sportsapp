@@ -10,7 +10,7 @@ class Betslip extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'session_id',
         'game_id',
         'betslip_team_names',
         'betslip_market',
