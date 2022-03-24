@@ -25,7 +25,6 @@ class StoreBetslipRequest extends FormRequest
     {
         return [
             //
-            'user_id' => ['required', 'numeric'],
             'game_id' => ['required', 'numeric'],
             'betslip_team_names' => ['required', 'string'],
             'betslip_market' => ['required', 'string'],
