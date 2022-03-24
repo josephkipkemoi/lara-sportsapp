@@ -25,6 +25,7 @@ class BetslipController extends Controller
            ]);
        } else {
            $slip = Betslip::create([
+            'session_id' => session()->getId(),
             'game_id' => $request->validated()['game_id'],
             'betslip_team_names' => $request->validated()['betslip_team_names'],
             'betslip_market' => $request->validated()['betslip_market'],
@@ -32,6 +33,30 @@ class BetslipController extends Controller
            ]);
        }
 
-        return $slip;
+       return response()
+                    ->json([
+                        'session_id' => $slip->session_id,
+                        'game_id' => $slip->game_id,
+                        'betslip_team_names' => $slip->betslip_team_names,
+                        'betslip_market' => $slip->betslip_market,
+                        'betslip_market_odds' =>  $slip->betslip_market_odds,
+                    ]);
+    }
+
+    public function odds_total()
+    {
+        $betslips = Betslip::all();
+
+        $odds_total = 1;
+
+        foreach($betslips as $betslip)
+        {
+            $odds_total *= $betslip->betslip_market_odds;
+        }
+
+        return response()
+                    ->json([
+                        'odds_total' => $odds_total
+                    ]);
     }
 }
