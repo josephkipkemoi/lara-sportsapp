@@ -24,5 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/balances/{user}/balance', [BalanceController::class, 'store'])->name('balance.store');
 Route::get('/balances/{user}/balance', [BalanceController::class, 'index'])->name('balance.index');
 
-// Add Cart
+// Add Betslip Cart
 Route::post('/betslip', [BetslipController::class, 'store'])->name('betslip.store');
+
+// Get Betslip Cart odds total
+Route::get('/betslip/odds-total', [BetslipController::class, 'odds_total'])->name('betslip.total');
