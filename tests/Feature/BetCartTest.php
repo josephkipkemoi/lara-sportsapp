@@ -17,50 +17,44 @@ class BetCartTest extends TestCase
      *
      * @return void
      */
-    public function test_user_can_add_game_to_cart()
+    public function test_unauthenticated_user_can_add_game_to_cart()
     {
-        $user = User::factory()->create();
-        // $game1 = Game::factory()->create();
-        // $game2 = Game::factory()->create();
-        // $game3 = Game::factory()->create();
-
         $response = $this->post('api/betslip',[
-            'user_id' => $user->id,
             'game_id' => 1,
             'betslip_team_names' => '$game1->betslip_team_names',
             'betslip_market' => '$game1->betslip_market',
             'betslip_market_odds' => 1,
         ]);
 
-        // $this->post('api/betslip',[
-        //     'game_id' => $game1->id,
-        //     'betslip_team_names' => $game1->betslip_team_names,
-        //     'betslip_market' => $game1->betslip_market,
-        //     'betslip_market_odds' =>$game1->betslip_market_odds,
-        // ]);
+        $this->post('api/betslip',[
+            'game_id' => 2,
+            'betslip_team_names' => 'aa',
+            'betslip_market' => 'mm',
+            'betslip_market_odds' => 2,
+        ]);
 
-        // $this->post('api/betslip',[
-        //     'game_id' => $game2->id,
-        //     'betslip_team_names' => $game2->betslip_team_names,
-        //     'betslip_market' => $game2->betslip_market,
-        //     'betslip_market_odds' =>$game2->betslip_market_odds,
-        // ]);
+        $this->post('api/betslip',[
+            'game_id' => 1,
+            'betslip_team_names' => 'Man',
+            'betslip_market' => '3 way',
+            'betslip_market_odds' => 3,
+        ]);
 
-        // $this->post('api/betslip',[
-        //     'game_id' => $game2->id,
-        //     'betslip_team_names' => $game2->betslip_team_names,
-        //     'betslip_market' => $game2->betslip_market,
-        //     'betslip_market_odds' =>$game2->betslip_market_odds,
-        // ]);
+        $this->post('api/betslip',[
+            'game_id' => 3,
+            'betslip_team_names' => 'f',
+            'betslip_market' => 'game2->betslip_market',
+            'betslip_market_odds' => 2,
+        ]);
 
-        // $this->post('api/betslip',[
-        //     'game_id' => $game3->id,
-        //     'betslip_team_names' => $game3->betslip_team_names,
-        //     'betslip_market' => $game3->betslip_market,
-        //     'betslip_market_odds' =>$game3->betslip_market_odds,
-        // ]);
+        $this->post('api/betslip',[
+            'game_id' => 2,
+            'betslip_team_names' => '$game3->betslip_team_names',
+            'betslip_market' => '$game3->betslip_market',
+            'betslip_market_odds' => 88,
+        ]);
 
-        $response->assertCreated();
+        $response->assertOk();
 
     }
 }
