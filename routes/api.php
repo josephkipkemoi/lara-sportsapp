@@ -21,11 +21,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // User Balance
-Route::post('/balances/{user}/balance', [BalanceController::class, 'store'])->name('balance.store');
-Route::get('/balances/{user}/balance', [BalanceController::class, 'index'])->name('balance.index');
+Route::post('v1/balances/{user}/balance', [BalanceController::class, 'store']);
+Route::get('v1/balances/{user}/balance', [BalanceController::class, 'index']);
 
 // Add Betslip Cart
-Route::post('/betslip', [BetslipController::class, 'store'])->name('betslip.store');
+Route::post('v1/betslip', [BetslipController::class, 'store']);
+
+// Get all bets in current browser session
+Route::get('v1/betslip/sessions/{betslip:session_id}/session', [BetslipController::class, 'session_show']);
 
 // Get Betslip Cart odds total
-Route::get('/betslip/odds-total', [BetslipController::class, 'odds_total'])->name('betslip.total');
+Route::get('v1/betslip/sessions/{betslip:session_id}/session/odds-total', [BetslipController::class, 'odds_total']);
+
+// Betslip Checkout
+Route::post('v1/betslip/sessions/{betslip:session_id}/session/users/{user:id}/user/checkout', [BetslipController::class, 'checkout']);
+
+// Remove single game from bet cart
+Route::delete('v1/betslip/games/{betslip:game_id}/game', [BetslipController::class, 'game_destroy']);
+
+// Remove all games in current session
+Route::delete('v1/betslip/sessions/{betslip:session_id}/session', [BetslipController::class, 'betslip_destroy']);
