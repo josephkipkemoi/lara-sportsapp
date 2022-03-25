@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBetslipRequest;
 use App\Models\Betslip;
+use App\Models\CheckoutBetCart;
 use App\Models\Game;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -43,9 +44,9 @@ class BetslipController extends Controller
                     ]);
     }
 
-    public function odds_total()
+    public function odds_total($id)
     {
-        $betslips = Betslip::all();
+        $betslips = Betslip::where('session_id', $id)->get();
 
         $odds_total = 1;
 
@@ -58,5 +59,67 @@ class BetslipController extends Controller
                     ->json([
                         'odds_total' => $odds_total
                     ]);
+    }
+
+    public function game_destroy($id)
+    {
+        Betslip::where('game_id', $id)->delete();
+
+        return response()
+                    ->json([
+                        'message' => 'Game deleted succefully'
+                    ]);
+    }
+
+    public function session_show($id)
+    {
+        $betslips = Betslip::where('session_id', $id)->get();
+
+        $betslips_count = Betslip::where('session_id', $id)->count();
+
+        return response()
+                    ->json([
+                        'data' => $betslips,
+                        'count' => $betslips_count
+                    ]);
+    }
+
+    public function betslip_destroy($id)
+    {
+        Betslip::where('session_id', $id)->delete();
+
+        return response()
+                    ->json([
+                        'message' => 'Betslip removed successfully'
+                    ]);
+    }
+
+    public function checkout($session_id, $user_id)
+    {
+        $data = request()->validate([
+            'stake_amount' => ['required', 'numeric'],
+            'final_payout' => ['required', 'numeric'],
+            'total_odds' => ['required', 'numeric']
+        ]);
+
+        $stake_amount = $data['stake_amount'];
+
+        $total_odds = $data['total_odds'];
+
+        $final_payout = $stake_amount * $total_odds;
+
+        CheckoutBetCart::create([
+            'user_id' => $user_id,
+            'session_id' => $session_id,
+            'stake_amount' => $stake_amount,
+            'total_odds' => $total_odds,
+            'final_payout' => $final_payout
+        ]);
+
+        return response()
+                    ->json([
+                        'message' => 'Congratulations! Bet placed successfully'
+                    ]);
+
     }
 }
