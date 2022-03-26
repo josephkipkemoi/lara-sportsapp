@@ -19,7 +19,7 @@ class BalanceTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->post("api/balances/{$user->id}/balance", [
+        $response = $this->post("api/v1/balances/{$user->id}/balance", [
             'amount' => $this->faker()->numberBetween(100,1000)
         ]);
 
@@ -30,12 +30,16 @@ class BalanceTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $user->balance()->create([
-            'amount' => $this->faker()->numberBetween(50, 1000)
+        // user places stake amount
+        $balance = $this->post("api/v1/balances/{$user->id}/balance", [
+            'amount' => 1000
         ]);
 
-        $response = $this->get("api/balances/{$user->id}/balance");
+        $response = $this->get("api/v1/balances/{$user->id}/balance");
 
-        $response->assertOk();
+        $response->assertOk()
+                 ->assertJsonFragment([
+                     'amount' => 1000
+                 ]);
     }
 }
