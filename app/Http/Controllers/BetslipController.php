@@ -122,4 +122,17 @@ class BetslipController extends Controller
                     ]);
 
     }
+
+    public function betslip_show($user_id)
+    {
+        $betslips = CheckoutBetCart::where('user_id', $user_id)->get();
+
+        $betslip_count = $betslips->count();
+
+        return response()
+                    ->json([
+                        'count' => $betslip_count,
+                        'data' => $betslips 
+                    ]);
+    }
 }
