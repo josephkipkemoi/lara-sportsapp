@@ -159,6 +159,11 @@ class BetCartTest extends TestCase
             'remember_token' => Str::random(10),
         ]);
 
+        $balance = $user->balance()->create([
+            'amount' => 100
+        ]);
+
+
         $betslip = Betslip::create([
             'session_id' => 1,
             'game_id' => 2,
@@ -178,17 +183,20 @@ class BetCartTest extends TestCase
         $total_odds = $this->get("api/v1/betslip/sessions/{$betslip->session_id}/session/odds-total")->getData()->odds_total;
 
         $final_payout = $total_odds * 100;
+        
+        $stake_amount = 100;
 
         $response = $this->post("api/v1/betslip/sessions/{$betslip->session_id}/session/users/{$user->id}/user/checkout", [
-            'stake_amount' => 100,
+            'stake_amount' => $stake_amount,
             'final_payout' => $final_payout,
             'total_odds' => $total_odds
         ]);
-        
+
         $response->assertOk()
-                 ->assertJsonStructure([
-                     'message',
-                 ]);
+            ->assertJsonStructure([
+                'message',
+        ]);    
+
     }
 
     public function test_user_can_get_all_placed_bets()
