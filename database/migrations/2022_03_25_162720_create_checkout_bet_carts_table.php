@@ -20,6 +20,7 @@ return new class extends Migration
             $table->bigInteger('stake_amount');
             $table->bigInteger('total_odds');
             $table->bigInteger('final_payout');
+            $table->string('betslip_status')->default('Not Settled');
             $table->timestamps();
         });
     }
