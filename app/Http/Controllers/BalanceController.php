@@ -16,10 +16,20 @@ class BalanceController extends Controller
         $user->balance()->create([
             'amount' => $request->validated()['amount']
         ]);
+
+        return response()
+                    ->json([
+                        'message' => 'Amount deposited successfully, you may now place your bet',
+                    ]);
     }
 
     public function index(User $user)
     {
-        return $user->balance;
+        $balance = $user->balance->amount;
+
+        return response()
+                    ->json([
+                        'amount' => $balance
+                    ]);
     }
 }

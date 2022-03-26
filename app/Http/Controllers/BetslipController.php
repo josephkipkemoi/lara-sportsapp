@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBetslipRequest;
+use App\Models\Balance;
 use App\Models\Betslip;
 use App\Models\CheckoutBetCart;
 use App\Models\Game;
@@ -102,24 +103,41 @@ class BetslipController extends Controller
             'total_odds' => ['required', 'numeric']
         ]);
 
+        $user_balance = Balance::where('user_id', $user_id)->first()->amount;
+
         $stake_amount = $data['stake_amount'];
 
         $total_odds = $data['total_odds'];
 
         $final_payout = $stake_amount * $total_odds;
 
-        CheckoutBetCart::create([
-            'user_id' => $user_id,
-            'session_id' => $session_id,
-            'stake_amount' => $stake_amount,
-            'total_odds' => $total_odds,
-            'final_payout' => $final_payout
-        ]);
+        if($user_balance < $stake_amount)
+        {
+            return response()
+                        ->json([
+                            'message' => 'Add more stake to place bet'
+                        ]);
+        }
+        else 
+        {
+            CheckoutBetCart::create([
+                'user_id' => $user_id,
+                'session_id' => $session_id,
+                'stake_amount' => $stake_amount,
+                'total_odds' => $total_odds,
+                'final_payout' => $final_payout
+            ]);
 
-        return response()
-                    ->json([
-                        'message' => 'Congratulations! Bet placed successfully'
-                    ]);
+            // Subtract balance from stake
+            Balance::where('user_id', $user_id)->decrement('amount', $stake_amount);
+
+            return response()
+            ->json([
+                'message' => 'Congratulations! Bet placed successfully'
+            ]);
+        }
+     
+      
 
     }
 
