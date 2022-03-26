@@ -190,4 +190,40 @@ class BetCartTest extends TestCase
                      'message',
                  ]);
     }
+
+    public function test_user_can_get_all_placed_bets()
+    {
+        $user = User::create([
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
+        ]);
+
+        $betslip = Betslip::create([
+            'session_id' => 1,
+            'game_id' => 2,
+            'betslip_team_names' => '$game1->betslip_team_names',
+            'betslip_market' => '$game1->betslip_market',
+            'betslip_market_odds' => 3,
+        ]);
+
+        $total_odds = $this->get("api/v1/betslip/sessions/{$betslip->session_id}/session/odds-total")->getData()->odds_total;
+
+        $final_payout = $total_odds * 100;
+
+        $response = $this->post("api/v1/betslip/sessions/{$betslip->session_id}/session/users/{$user->id}/user/checkout", [
+            'stake_amount' => 100,
+            'final_payout' => $final_payout,
+            'total_odds' => $total_odds
+        ]);
+
+        $response = $this->get("api/v1/betslips/{$user->id}/betslip");
+
+        $response->assertOk()
+                 ->assertJsonFragment([
+                     'count' => 1
+                 ]);
+    }
 }
