@@ -21,8 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // User Balance
-Route::post('v1/balances/{user}/balance', [BalanceController::class, 'store']);
-Route::get('v1/balances/{user}/balance', [BalanceController::class, 'index']);
+Route::post('v1/balances/{user:id}/balance', [BalanceController::class, 'store']);
+Route::get('v1/balances/{user:id}/balance', [BalanceController::class, 'index']);
 
 // Add Betslip Cart
 Route::post('v1/betslip', [BetslipController::class, 'store']);
