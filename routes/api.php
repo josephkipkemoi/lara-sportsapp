@@ -36,6 +36,9 @@ Route::get('v1/betslip/sessions/{betslip:session_id}/session/odds-total', [Betsl
 // Betslip Checkout
 Route::post('v1/betslip/sessions/{betslip:session_id}/session/users/{user:id}/user/checkout', [BetslipController::class, 'checkout']);
 
+// Get all betslips that have been placed
+Route::get('v1/betslips/{user:id}/betslip', [BetslipController::class, 'betslip_show']);
+
 // Remove single game from bet cart
 Route::delete('v1/betslip/games/{betslip:game_id}/game', [BetslipController::class, 'game_destroy']);
 
