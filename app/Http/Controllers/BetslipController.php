@@ -27,7 +27,7 @@ class BetslipController extends Controller
            ]);
        } else {
            $slip = Betslip::create([
-            'session_id' => session()->getId(),
+            'session_id' => $request->validated()['session_id'],
             'game_id' => $request->validated()['game_id'],
             'betslip_team_names' => $request->validated()['betslip_team_names'],
             'betslip_market' => $request->validated()['betslip_market'],

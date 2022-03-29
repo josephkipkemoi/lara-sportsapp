@@ -28,4 +28,3 @@ Route::get('/countries', function () {
 })->name('countries');
 
 
-require __DIR__.'/auth.php';

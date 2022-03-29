@@ -44,3 +44,6 @@ Route::delete('v1/betslip/games/{betslip:game_id}/game', [BetslipController::cla
 
 // Remove all games in current session
 Route::delete('v1/betslip/sessions/{betslip:session_id}/session', [BetslipController::class, 'betslip_destroy']);
+
+
+require __DIR__.'/auth.php';
