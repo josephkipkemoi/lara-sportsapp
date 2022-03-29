@@ -15,6 +15,13 @@ return new class extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->id();
+            $table->string('game_id');
+            $table->string('game_category');
+            $table->string('kick_off_time');
+            $table->string('home_team');
+            $table->string('away_team');
+            $table->bigInteger('odds_home');
+            $table->bigInteger('odds_away');
             $table->timestamps();
         });
     }

@@ -18,9 +18,13 @@ class GameFactory extends Factory
     {
         return [
             //
-            'betslip_team_names' => $this->faker->name(),
-            'betslip_market' => $this->faker->name(),
-            'betslip_market_odds' => $this->faker->numberBetween(2,5)
+            'game_id' => $this->faker->numberBetween(0,10),
+            'game_category' => $this->faker->word(),
+            'kick_off_time' => $this->faker->time(),
+            'home_team' => $this->faker->word(),
+            'away_team' => $this->faker->word(),
+            'odds_home' => $this->faker->numberBetween(1,3),
+            'odds_away' => $this->faker->numberBetween(2,5)
         ];
     }
 }
