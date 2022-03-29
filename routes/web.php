@@ -14,10 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    
-    return view('landing');
-});
+Route::get('/{path?}', [
+    'uses' => 'App\Http\Controllers\ReactController@show',
+    'as' => 'react',
+    'where' => ['path' => '.*']
+]);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
