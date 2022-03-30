@@ -62,9 +62,9 @@ class BetslipController extends Controller
                     ]);
     }
 
-    public function game_destroy($id)
+    public function game_destroy($session_id, $game_id)
     {
-        Betslip::where('game_id', $id)->delete();
+        Betslip::where(['session_id' => $session_id,'game_id' => $game_id])->delete();
 
         return response()
                     ->json([
