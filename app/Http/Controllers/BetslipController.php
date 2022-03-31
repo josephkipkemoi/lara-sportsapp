@@ -7,6 +7,7 @@ use App\Models\Balance;
 use App\Models\Betslip;
 use App\Models\CheckoutBetCart;
 use App\Models\Game;
+use App\Models\Payout;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -151,6 +152,27 @@ class BetslipController extends Controller
                     ->json([
                         'count' => $betslip_count,
                         'data' => $betslips 
+                    ]);
+    }
+
+    public function payout($session_id)
+    {
+        $data = request()->validate([
+            'stake_amount' => ['required', 'numeric']
+        ]);
+
+        $betslip_odds = $this->odds_total($session_id)->getData()->odds_total;
+
+        $payout = $data['stake_amount'] * $betslip_odds;
+
+        $checkout_cart = Payout::create([
+            'session_id' => $session_id,
+            'payout' =>  $payout
+        ]);
+
+        return response()
+                    ->json([
+                        'payout' => $checkout_cart->payout
                     ]);
     }
 }
