@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('checkout_bet_carts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('session_id');
             $table->bigInteger('stake_amount');
             $table->bigInteger('total_odds');
