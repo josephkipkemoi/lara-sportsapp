@@ -99,6 +99,7 @@ class BetslipController extends Controller
     public function checkout($session_id, $user_id)
     {
         $data = request()->validate([
+            'bet_id' => ['required', 'string'],
             'stake_amount' => ['required', 'numeric'],
             'final_payout' => ['required', 'numeric'],
             'total_odds' => ['required', 'numeric']
@@ -123,6 +124,7 @@ class BetslipController extends Controller
         {
             CheckoutBetCart::create([
                 'user_id' => $user_id,
+                'bet_id' => $data['bet_id'],
                 'session_id' => $session_id,
                 'stake_amount' => $stake_amount,
                 'total_odds' => $total_odds,
@@ -181,6 +183,7 @@ class BetslipController extends Controller
         $data = request()->validate([
             'user_id' => ['required', 'numeric'],
             'session_id' => ['required', 'numeric'],
+            'bet_id' => ['required', 'string'],
             'stake_amount' => ['required', 'numeric'],
             'total_odds' => ['required', 'numeric'],
             'final_payout' => ['required', 'numeric']
@@ -189,6 +192,7 @@ class BetslipController extends Controller
         CheckoutBetCart::create([
             'user_id' => $data['user_id'],
             'session_id' => $data['session_id'],
+            'bet_id' => $data['bet_id'],
             'stake_amount' => $data['stake_amount'],
             'total_odds' => $data['total_odds'],
             'final_payout' => $data['final_payout']
@@ -197,6 +201,17 @@ class BetslipController extends Controller
         return response()
                     ->json([
                         'message' => 'Bet placed successfully'
+                    ]);
+    }
+
+    public function cart_index($session_id, $user_id)
+    {
+        $cart_data = CheckoutBetCart::where(['session_id' => $session_id, 'user_id' => $user_id])->get();
+
+        return response()
+                    ->json([
+                        'count' => $cart_data->count(),
+                        'data' => $cart_data
                     ]);
     }
 }

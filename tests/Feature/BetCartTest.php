@@ -125,8 +125,6 @@ class BetCartTest extends TestCase
 
         $response = $this->delete("api/v1/betslips/sessions/{$betslip->session_id}/session/games/{$betslip->game_id}/game");
 
-        dd($response);
-
         $response->assertOk();
  
     }
@@ -163,14 +161,14 @@ class BetCartTest extends TestCase
             'remember_token' => Str::random(10),
         ]);
 
-        $balance = $user->balance()->create([
+        $user->balance()->create([
             'amount' => 100
         ]);
 
 
         $betslip = Betslip::create([
             'session_id' => 1,
-            'game_id' => 2,
+            'game_id' => 1,
             'betslip_team_names' => '$game1->betslip_team_names',
             'betslip_market' => '$game1->betslip_market',
             'betslip_market_odds' => 3,
@@ -178,7 +176,7 @@ class BetCartTest extends TestCase
 
         Betslip::create([
             'session_id' => 1,
-            'game_id' => 2,
+            'game_id' => 1,
             'betslip_team_names' => '$game1->betslip_team_names',
             'betslip_market' => '$game1->betslip_market',
             'betslip_market_odds' => 4.3,
@@ -191,6 +189,7 @@ class BetCartTest extends TestCase
         $stake_amount = 100;
 
         $response = $this->post("api/v1/betslips/sessions/{$betslip->session_id}/session/users/{$user->id}/user/checkout", [
+            'bet_id' => Str::random(6),            
             'stake_amount' => $stake_amount,
             'final_payout' => $final_payout,
             'total_odds' => $total_odds
@@ -220,6 +219,7 @@ class BetCartTest extends TestCase
         $betslip = Betslip::create([
             'session_id' => 1,
             'game_id' => 2,
+            'bet_id' => Str::random(6),
             'betslip_team_names' => '$game1->betslip_team_names',
             'betslip_market' => '$game1->betslip_market',
             'betslip_market_odds' => 3,
@@ -229,7 +229,8 @@ class BetCartTest extends TestCase
 
         $final_payout = $total_odds * 100;
 
-        $response = $this->post("api/v1/betslips/sessions/{$betslip->session_id}/session/users/{$user->id}/user/checkout", [
+        $this->post("api/v1/betslips/sessions/{$betslip->session_id}/session/users/{$user->id}/user/checkout", [
+            'bet_id' => Str::random(6),            
             'stake_amount' => 100,
             'final_payout' => $final_payout,
             'total_odds' => $total_odds
@@ -250,6 +251,7 @@ class BetCartTest extends TestCase
         $this->post('api/v1/betslips',[
             'session_id' => $session_id,
             'game_id' => 1,
+            'bet_id' => Str::random(6),
             'betslip_team_names' => '$game1->betslip_team_names',
             'betslip_market' => '$game1->betslip_market',
             'betslip_market_odds' => 4,
@@ -258,6 +260,7 @@ class BetCartTest extends TestCase
         $this->post('api/v1/betslips',[
             'session_id' => $session_id,
             'game_id' => 2,
+            'bet_id' => Str::random(6),
             'betslip_team_names' => '$game1->betslip_team_names',
             'betslip_market' => '$game1->betslip_market',
             'betslip_market_odds' => 3,
@@ -287,6 +290,7 @@ class BetCartTest extends TestCase
         $session_id = $this->post('api/v1/betslips',[
             'session_id' => 1,
             'game_id' => 1,
+            'bet_id' => Str::random(6),
             'betslip_team_names' => '$game1->betslip_team_names',
             'betslip_market' => '$game1->betslip_market',
             'betslip_market_odds' => 4,
@@ -304,6 +308,7 @@ class BetCartTest extends TestCase
         $response = $this->post("api/v1/betslips/sessions/{$session_id}/session/users/{$user->id}/user/payout", [
             'session_id' => $session_id,
             'user_id' => $user->id,
+            'bet_id' => Str::random(6),
             'stake_amount' => $stake_amount,
             'total_odds' => $total_odds,
             'final_payout' => $final_payout 
@@ -313,5 +318,48 @@ class BetCartTest extends TestCase
                  ->assertJsonFragment([
                      'message' => 'Bet placed successfully',
                  ]);    
+    }
+
+    public function test_authenticated_user_can_get_all_placed_bets()
+    {
+        $user = User::factory()->create();
+
+        $session_id = $this->post('api/v1/betslips',[
+            'session_id' => 1,
+            'game_id' => 1,
+            'bet_id' => Str::random(6),
+            'betslip_team_names' => '$game1->betslip_team_names',
+            'betslip_market' => '$game1->betslip_market',
+            'betslip_market_odds' => 4,
+        ])->getData()->session_id;
+
+        $total_odds = $this->get("api/v1/betslips/sessions/{$session_id}/session/odds-total")->getData()->odds_total;
+
+        $stake_amount = 100;
+
+        $final_payout = $this->post("api/v1/betslips/sessions/{$session_id}/session/payout", [
+            'session_id' => $session_id,
+            'stake_amount' => $stake_amount,
+        ])->getData()->payout;
+
+        $this->post("api/v1/betslips/sessions/{$session_id}/session/users/{$user->id}/user/payout", [
+            'session_id' => $session_id,
+            'user_id' => $user->id,
+            'bet_id' => Str::random(6),
+            'stake_amount' => $stake_amount,
+            'total_odds' => $total_odds,
+            'final_payout' => $final_payout 
+        ]);
+
+        $response = $this->get("api/v1/betslips/sessions/{$session_id}/session/users/{$user->id}/user/cart");
+
+        $response->assertOk()
+                 ->assertJsonFragment([
+                     'count' => 1
+                 ])
+                 ->assertJsonStructure([
+                     'count',
+                     'data'
+                 ]);
     }
 }

@@ -44,6 +44,9 @@ Route::post('v1/betslips/sessions/{betslip:session_id}/session/payout', [Betslip
 // Post Final Cart
 Route::post('v1/betslips/sessions/{betslip:session_id}/session/users/{user:id}/user/payout', [BetslipController::class, 'cart']);
 
+// Get all placed bets
+Route::get('v1/betslips/sessions/{betslip:session_id}/session/users/{user:id}/user/cart', [BetslipController::class, 'cart_index']);
+
 // Betslip Checkout
 Route::post('v1/betslips/sessions/{betslip:session_id}/session/users/{user:id}/user/checkout', [BetslipController::class, 'checkout']);
 

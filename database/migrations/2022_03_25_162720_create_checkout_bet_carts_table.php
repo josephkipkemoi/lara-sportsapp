@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('session_id');
+            $table->string('bet_id');
             $table->bigInteger('stake_amount');
             $table->bigInteger('total_odds');
             $table->bigInteger('final_payout');

@@ -12,6 +12,7 @@ class CheckoutBetCart extends Model
     protected $fillable = [
         'user_id',
         'session_id',
+        'bet_id',
         'stake_amount',
         'total_odds',
         'final_payout'
