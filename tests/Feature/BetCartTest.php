@@ -279,4 +279,39 @@ class BetCartTest extends TestCase
                       'payout' => $payout
                   ]);
     }
+
+    public function test_authenticated_user_can_post_checkout_cart()
+    {
+        $user = User::factory()->create();
+
+        $session_id = $this->post('api/v1/betslips',[
+            'session_id' => 1,
+            'game_id' => 1,
+            'betslip_team_names' => '$game1->betslip_team_names',
+            'betslip_market' => '$game1->betslip_market',
+            'betslip_market_odds' => 4,
+        ])->getData()->session_id;
+
+        $total_odds = $this->get("api/v1/betslips/sessions/{$session_id}/session/odds-total")->getData()->odds_total;
+
+        $stake_amount = 100;
+
+        $final_payout = $this->post("api/v1/betslips/sessions/{$session_id}/session/payout", [
+            'session_id' => $session_id,
+            'stake_amount' => $stake_amount,
+        ])->getData()->payout;
+
+        $response = $this->post("api/v1/betslips/sessions/{$session_id}/session/users/{$user->id}/user/payout", [
+            'session_id' => $session_id,
+            'user_id' => $user->id,
+            'stake_amount' => $stake_amount,
+            'total_odds' => $total_odds,
+            'final_payout' => $final_payout 
+        ]);
+
+        $response->assertOk()
+                 ->assertJsonFragment([
+                     'message' => 'Bet placed successfully',
+                 ]);    
+    }
 }
