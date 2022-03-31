@@ -38,6 +38,9 @@ Route::get('v1/betslips/sessions/{betslip:session_id}/session', [BetslipControll
 // Get Betslip Cart odds total
 Route::get('v1/betslips/sessions/{betslip:session_id}/session/odds-total', [BetslipController::class, 'odds_total']);
 
+// Calculate Cart Payout
+Route::post('v1/betslips/sessions/{betslip:session_id}/session/payout', [BetslipController::class, 'payout']);
+
 // Betslip Checkout
 Route::post('v1/betslips/sessions/{betslip:session_id}/session/users/{user:id}/user/checkout', [BetslipController::class, 'checkout']);
 
