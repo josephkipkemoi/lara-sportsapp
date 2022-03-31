@@ -247,7 +247,7 @@ class BetCartTest extends TestCase
     {
         $session_id = 1;
 
-        $slip1 = $this->post('api/v1/betslips',[
+        $this->post('api/v1/betslips',[
             'session_id' => $session_id,
             'game_id' => 1,
             'betslip_team_names' => '$game1->betslip_team_names',
@@ -255,7 +255,7 @@ class BetCartTest extends TestCase
             'betslip_market_odds' => 4,
         ]);
 
-        $slip2 = $this->post('api/v1/betslips',[
+        $this->post('api/v1/betslips',[
             'session_id' => $session_id,
             'game_id' => 2,
             'betslip_team_names' => '$game1->betslip_team_names',
@@ -265,6 +265,18 @@ class BetCartTest extends TestCase
 
         $total_odds = $this->get("api/v1/betslips/sessions/{$session_id}/session/odds-total")->getData()->odds_total;
 
-        dd($total_odds);
+        $stake_amount = 100;
+
+        $response = $this->post("api/v1/betslips/sessions/{$session_id}/session/payout", [
+            'session_id' => $session_id,
+            'stake_amount' => $stake_amount,
+        ]);
+
+        $payout = $total_odds * $stake_amount;
+
+        $response->assertOk()
+                  ->assertJsonFragment([
+                      'payout' => $payout
+                  ]);
     }
 }
