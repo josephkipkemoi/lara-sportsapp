@@ -8,6 +8,7 @@ import { store } from '../store';
 import Landing from './Landing';
 import Help from './Help';
 import Login from './Login';
+import Register from './Register';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ if (document.getElementById('app')) {
                 <Routes>
                 <Route path='/' element={<App />} /> 
                 <Route path='/login' element={<Login />} />
+                <Route path='/register' element={<Register />} />
                 <Route path='/help' element={<Help />}/>
                 </Routes>
             </BrowserRouter>
