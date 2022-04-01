@@ -1,7 +1,7 @@
 import { uniqueId } from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchGames, getCartGames, getCartOddsTotal, postGames } from "../features/game/gameSlice";
+import { fetchGames, getCartGames, getCartOddsTotal, getPayOut, postGames, postPayOut } from "../features/game/gameSlice";
 
 function Game(){
 
@@ -39,8 +39,11 @@ function Game(){
         //     'betslip_market' : home,
         //     'betslip_market_odds' : 3
         // }))
+        // dispatch(postPayOut(1))
+
         dispatch(getCartGames(1))
         dispatch(getCartOddsTotal(1))
+
     };
 
     const listedGames = game[0] ? game[0].map((games,key) => {

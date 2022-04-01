@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCartGames, getCartGames, getCartOddsTotal, removeSingleCartGame } from "../features/game/gameSlice";
+import { clearCartGames, getCartGames, getCartOddsTotal, getPayOut, removeSingleCartGame } from "../features/game/gameSlice";
 
 function Cart() {
 
     const dispatch = useDispatch();
 
     const cart = useSelector(state => state.game.cartData.data);
+
+    const [posswin, setPosswin] = useState(0);
 
     const updateCart = (session_id, game_id) => {
         dispatch(removeSingleCartGame({
@@ -16,6 +18,7 @@ function Cart() {
 
         dispatch(getCartGames(session_id))
         dispatch(getCartOddsTotal(session_id))
+        // dispatch(getPayOut(session_id))
     }
 
     const listedCartGames = !!cart ? cart.map((game) => {
@@ -30,7 +33,9 @@ function Cart() {
         )
     }) : 'loading';
 
-    const total_odds = useSelector(state => !!state.game.oddsTotal.odds_total ? state.game.oddsTotal.odds_total : 0)
+    const total_odds = useSelector(state => !!state.game.oddsTotal.odds_total ? state.game.oddsTotal.odds_total : 0);
+
+    // const possible_win = useSelector(state => state.game.payout)
     
     return (
         <div>
@@ -39,8 +44,8 @@ function Cart() {
                     <h1>Betslip</h1>
                     {listedCartGames}
                     <span className="d-block">Total Odds: {total_odds}</span>
-                    <input className="form-group d-block" placeholder="stake" />
-                    <span className="d-block">Possible Win: Kshs 344</span>
+                    <input className="form-group d-block" placeholder="stake" onChange={(e) => setPosswin(e.target.value * total_odds)}/>
+                    <span className="d-block">Possible Win: Kshs {posswin}</span>
                     <button className="btn btn-danger btn-sm" onClick={() => dispatch(clearCartGames(1))}>Cancel</button>
                     <button className="btn btn-primary btn-sm">Place Bet</button>
                 </div>

@@ -178,6 +178,16 @@ class BetslipController extends Controller
                     ]);
     }
 
+    public function payout_index($session_id)
+    {
+        $payout = Payout::where('session_id', $session_id)->first()->payout;
+
+        return response()
+                    ->json([
+                        'payout' => $payout
+                    ]);
+    }
+
     public function cart()
     {
         $data = request()->validate([

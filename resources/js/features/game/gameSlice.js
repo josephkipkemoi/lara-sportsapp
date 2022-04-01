@@ -59,9 +59,33 @@ export const getCartOddsTotal = createAsyncThunk(
 
         const response = await axios.get(`api/v1/betslips/sessions/${id}/session/odds-total`);
 
-        return response.data
+        return response.data;
     }
 );
+
+export const postPayOut = createAsyncThunk(
+    'games/postPayout',
+    async (id, thunkApi) => {
+
+        const response = await axios.post(`api/v1/betslips/sessions/${id}/session/payout`,{
+            'session_id' : id,
+            'stake_amount' : 100
+        });
+
+        return response.data;
+    }
+);
+
+export const getPayOut = createAsyncThunk(
+    'games/getPayout',
+
+    async (id, thunkApi) => {
+
+        const response = await axios.get(`api/v1/betslips/sessions/${id}/session/payout`);
+
+        return response.data
+    }
+)
 
 export const gameSlice = createSlice({
     name: 'game',
@@ -70,6 +94,7 @@ export const gameSlice = createSlice({
         gameData: [],
         cartData:[],
         oddsTotal: 0,
+        payout: 0,
         loading: 'idle'
     },
     extraReducers: (builder) => {
@@ -87,6 +112,9 @@ export const gameSlice = createSlice({
         }),
         builder.addCase(getCartOddsTotal.fulfilled, (state, action) => {
             state.oddsTotal = action.payload
+        }),
+        builder.addCase(getPayOut.fulfilled, (state, action) => {
+            state.payout = action.payload
         })
     }
 });

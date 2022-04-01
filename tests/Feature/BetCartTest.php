@@ -270,17 +270,60 @@ class BetCartTest extends TestCase
 
         $stake_amount = 100;
 
+        $payout = $total_odds * $stake_amount;
+
         $response = $this->post("api/v1/betslips/sessions/{$session_id}/session/payout", [
             'session_id' => $session_id,
             'stake_amount' => $stake_amount,
+            'payout' => $payout
         ]);
-
-        $payout = $total_odds * $stake_amount;
 
         $response->assertOk()
                   ->assertJsonFragment([
                       'payout' => $payout
                   ]);
+    }
+
+    public function test_can_get_calculated_possible_payout()
+    {
+        $session_id = 1;
+
+        $this->post('api/v1/betslips',[
+            'session_id' => $session_id,
+            'game_id' => 1,
+            'bet_id' => Str::random(6),
+            'betslip_team_names' => '$game1->betslip_team_names',
+            'betslip_market' => '$game1->betslip_market',
+            'betslip_market_odds' => 4,
+        ]);
+
+        $this->post('api/v1/betslips',[
+            'session_id' => $session_id,
+            'game_id' => 2,
+            'bet_id' => Str::random(6),
+            'betslip_team_names' => '$game1->betslip_team_names',
+            'betslip_market' => '$game1->betslip_market',
+            'betslip_market_odds' => 3,
+        ]);
+
+        $total_odds = $this->get("api/v1/betslips/sessions/{$session_id}/session/odds-total")->getData()->odds_total;
+
+        $stake_amount = 100;
+
+        $payout = $total_odds * $stake_amount;
+
+        $this->post("api/v1/betslips/sessions/{$session_id}/session/payout", [
+            'session_id' => $session_id,
+            'stake_amount' => $stake_amount,
+            'payout' => $payout
+        ]);
+
+        $response = $this->get("api/v1/betslips/sessions/{$session_id}/session/payout");
+
+        $response->assertOk()
+                 ->assertJsonFragment([
+                    'payout' => $payout
+                 ]);
     }
 
     public function test_authenticated_user_can_post_checkout_cart()
