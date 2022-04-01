@@ -5,8 +5,9 @@ import { Provider } from 'react-redux';
 // Redux store
 import { store } from '../store';
 // Route Files / Resources 
-import Landing from '../routes/Landing';
-import Help from '../routes/Help';
+import Landing from './Landing';
+import Help from './Help';
+import Login from './Login';
 
 function App() {
     return (
@@ -22,7 +23,8 @@ if (document.getElementById('app')) {
             <BrowserRouter>
                 <Routes>
                 <Route path='/' element={<App />} /> 
-                <Route path='/help' element={<Help/>}/>
+                <Route path='/login' element={<Login />} />
+                <Route path='/help' element={<Help />}/>
                 </Routes>
             </BrowserRouter>
         </Provider>
