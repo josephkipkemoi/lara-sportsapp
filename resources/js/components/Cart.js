@@ -24,12 +24,19 @@ function Cart() {
     const listedCartGames = !!cart ? cart.map((game) => {
         const {betslip_market,betslip_market_odds,betslip_team_names, session_id, game_id} = game;
         return (
-           <>
-                <button onClick={() => updateCart(session_id, game_id)} className="float-end btn btn-danger btn-sm">x</button>
+           <div className="row">
+               <div className="col-1">
+                <button onClick={() => updateCart(session_id, game_id)} className="btn btn-dark btn-sm h-100 rounded-0">x</button>
+               </div>
+               <div className="col-8">
                 <span className="d-block">{betslip_team_names}</span>
                 <span className="d-block">{betslip_market}</span>
-                <span className="d-block">{betslip_market_odds}</span>
-           </>
+                <small>Starts 03/04, 18:00</small>
+               </div>
+               <div className="col-2 ">
+                <span className="d-block float-end">{betslip_market_odds}</span>
+               </div>   
+           </div>
         )
     }) : 'loading';
 
@@ -40,15 +47,31 @@ function Cart() {
     return (
         <div>
             {!!cart ?
-                <div>
-                    <h1>Betslip</h1>
+                <div className="row">
+                    <div className="d-flex justify-content-end pe-auto" onClick={() => dispatch(clearCartGames(1))}>
+                        <small >
+                            Clear All
+                        </small>
+                        <i className="bi bi-list"></i>
+                    </div>
+                   
                     {listedCartGames}
-                    <span className="d-block">Total Odds: {total_odds}</span>
-                    <input className="form-group d-block" placeholder="stake" onChange={(e) => setPosswin(e.target.value * total_odds)}/>
-                    <span className="d-block">Possible Win: Kshs {posswin}</span>
-                    <button className="btn btn-danger btn-sm" onClick={() => dispatch(clearCartGames(1))}>Cancel</button>
-                    <button className="btn btn-primary btn-sm">Place Bet</button>
-                </div>
+
+                    <div className="d-flex justify-content-between mt-5">
+                        <small>Total Odds</small>
+                        <small>{total_odds}</small>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                        <small>Amount</small>
+                        <input className="form-group d-block" type="number" value={100} onChange={(e) => setPosswin(e.target.value * total_odds)}/>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                        <small className="d-block">Final payout </small>
+                        <small>KES{posswin}</small>
+                    </div>
+                     <button className="btn btn-warning btn-sm W-100">Place Bet</button>
+
+                 </div>
                     :   <h1>Place Bet</h1>
             }
         </div>

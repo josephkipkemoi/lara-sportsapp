@@ -1,6 +1,7 @@
 import { uniqueId } from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { fetchGames, getCartGames, getCartOddsTotal, getPayOut, postGames, postPayOut } from "../features/game/gameSlice";
 
 function Game(){
@@ -48,40 +49,73 @@ function Game(){
 
     const listedGames = game[0] ? game[0].map((games,key) => {
         return (
-            <>
-                <span className="d-block" key={uniqueId()}>{games.kick_off_time}</span>
-                <span className="d-block" key={uniqueId()}>{games.game_category}</span>
-                <span className="d-block" key={uniqueId()}>{games.home_team}</span>
-                <span className="d-block" key={uniqueId()}>{games.away_team}</span>
-                <button className="btn btn-primary btn-sm" key={uniqueId()} onClick={(e) => (
-                e.preventDefault(),   
-                dispatch(postGames({
-                    'session_id' : 1,
-                    'game_id' : games.game_id,
-                    'betslip_team_names' : games.home_team + ' ' + games.away_team,
-                    'betslip_market' : games.home_team,
-                    'betslip_market_odds' : games.odds_home
-                })), 
-                cartAction() )}>{games.odds_home}</button>
-                <button className="btn btn-primary btn-sm" key={uniqueId()} onClick={(e) => (
-                e.preventDefault(),   
-                dispatch(postGames({
-                    'session_id' : 1,
-                    'game_id' : games.game_id,
-                    'betslip_team_names' : games.home_team + ' ' + games.away_team,
-                    'betslip_market' : games.away_team,
-                    'betslip_market_odds' : games.odds_away
-                })), 
-                cartAction() )}>{games.odds_away}</button>
-            </>            
+            <div className="row">
+                <div className="d-flex justify-content-between">
+                    <small className="d-block text-secondary" key={uniqueId()}>{games.game_category}</small>
+                    <small className="d-block text-secondary" key={uniqueId()}>{games.kick_off_time}</small>
+                </div>
+                <div className="col-6">
+                    <span className="d-block" key={uniqueId()}>{games.home_team}</span>
+                    <span className="d-block" key={uniqueId()}>{games.away_team}</span>
+                </div>
+                <div className="col-2">
+                    <button className="btn btn-primary rounded-pill btn-sm w-100" key={uniqueId()} onClick={(e) => (
+                    e.preventDefault(),   
+                    dispatch(postGames({
+                        'session_id' : 1,
+                        'game_id' : games.game_id,
+                        'betslip_team_names' : games.home_team + ' ' + games.away_team,
+                        'betslip_market' : games.home_team,
+                        'betslip_market_odds' : games.odds_home
+                    })), 
+                    cartAction() )}>
+                        {games.odds_home}
+                    </button>
+                </div>
+                <div className="col-2 justify-content-center">
+                        {games.draw ?
+                            <button className="btn btn-primary rounded-pill btn-sm w-100" key={uniqueId()} onClick={(e) => (
+                            e.preventDefault(),   
+                            dispatch(postGames({
+                                'session_id' : 1,
+                                'game_id' : games.game_id,
+                                'betslip_team_names' : games.home_team + ' ' + games.away_team,
+                                'betslip_market' : games.away_team,
+                                'betslip_market_odds' : games.odds_away
+                            })), 
+                            cartAction() )}>
+                             </button>
+                        : ''}
+                </div>
+                <div className="col-2">
+                    <button className="btn btn-primary rounded-pill btn-sm w-100" key={uniqueId()} onClick={(e) => (
+                    e.preventDefault(),   
+                    dispatch(postGames({
+                        'session_id' : 1,
+                        'game_id' : games.game_id,
+                        'betslip_team_names' : games.home_team + ' ' + games.away_team,
+                        'betslip_market' : games.away_team,
+                        'betslip_market_odds' : games.odds_away
+                    })), 
+                    cartAction() )}>
+                        {games.odds_away}
+                    </button>
+                </div>   
+                <div className="d-flex justify-content-end mb-2 mt-0 pt-0">
+                    <small><Link to={"#"} className="text-warning fw-bold">+13 Markets</Link></small>
+                </div>         
+            </div>            
             )
     }) : 'loading';
 
  return (
      <>
          {game.length > 0 ? //if 
-            <div >                                
-                <h1>Games</h1>
+            <div className="row">                                
+                <div className="col-6"><small>Teams</small></div>
+                <div className="col-2 text-center"><small>1</small></div>
+                <div className="col-2 text-center"><small>X</small></div>
+                <div className="col-2 text-center"><small>2</small></div>
                 {listedGames} 
             </div>                
             : // else
