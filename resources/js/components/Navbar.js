@@ -56,15 +56,24 @@ function NavBar(){
 
         <div>
             <div className="form-inline my-2 my-lg-0">
-                <ul className="navbar-nav">
-                <li className="nav-item">
-                    <Link className="nav-link" to="/help">Help & Support</Link>
+                <ul className="navbar-nav ">
+                <li className="nav-item ">
+                    <Link className="nav-link" to="/help">
+                    <i class="bi bi-question-circle-fill"></i>
+                        Help & Support
+                    </Link>
                 </li>
                 <li className="nav-item"> 
-                    <Link className="nav-link" to="#">Print Matches</Link>
+                    <Link className="nav-link" to="#">
+                    <i class="bi bi-printer-fill"></i>
+                        Print Matches
+                    </Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to="#">Search</Link>
+                    <Link className="nav-link" to="#">
+                    <i class="bi bi-search"></i>
+                        Search
+                    </Link>
                 </li>
                 </ul>
             </div>
